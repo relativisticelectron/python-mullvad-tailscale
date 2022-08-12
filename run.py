@@ -96,8 +96,28 @@ def write_mullvad_file(tailscale_ips):
         
 # %%
 
+def find_running_processes(process_names):
+    # import here, such that only users who exclude some processes need this import
+    import psutil
+    matches = []
+    for process in psutil.process_iter ():
+        for process_name in process_names:
+            if process_name in process.name():
+                matches.append({'name':process.name (), 'pid':process.pid})
+                
+    return matches
 
-def add():        
+def split_tunnel(process_names):      
+    matches = find_running_processes(process_names)  
+    for match in matches:
+        execute_cmd(f"mullvad split-tunnel pid add  {match['pid']}")   
+        print(f"-> Excluded '{match['name']}' from mullvad")
+
+
+# %%
+def add(exclude=None):       
+    if exclude:
+        split_tunnel(exclude)
     tailscale_ips = collect_tailscale_ips()        
     mullvad_rules_filename = write_mullvad_file(tailscale_ips)
     execute_cmd(f"sudo nft -f '{mullvad_rules_filename}'")               
@@ -114,11 +134,12 @@ def remove():
 parser = argparse.ArgumentParser(description='Sets nft rules such mullvad is compatible with tailscale')
 parser.add_argument('--remove',  action='store_true',
                     help='Remove the nft rules (default: Add the nft rules)')
+parser.add_argument('--exclude',  nargs='*' , help='Names of the processes that should circumvent the VPN')
 
 args = parser.parse_args()
 if args.remove:
     remove()
 else:
-    add()
+    add(exclude=args.exclude)
     
 # %%

@@ -21,10 +21,12 @@ The script will not start tailscale or mullvad, but simply configure the nftable
 git clone https://github.com/relativisticelectron/python-mullvad-tailscale.git
 ```
 
+2. `pip install psutil`
+
 ## Usage
 
 
-1. Run `python run.py` 
+1. Run `python run.py` . If you want that some (running) applications bypass mullvad run `python run.py --exclude programm_name1 programm_name2` 
 
 
 2. To remove the nftables run `python run.py --remove` 
