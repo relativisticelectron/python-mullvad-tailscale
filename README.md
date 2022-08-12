@@ -26,7 +26,7 @@ git clone https://github.com/relativisticelectron/python-mullvad-tailscale.git
 ## Usage
 
 
-1. Run `python run.py` . If you want that some (running) applications bypass mullvad run `python run.py --exclude programm_name1 programm_name2` 
+1. Run `python run.py` . If you want that some (running) applications bypass mullvad run `python run.py --exclude program_name1 program_name2` 
 
 
 2. To remove the nftables run `python run.py --remove` 
